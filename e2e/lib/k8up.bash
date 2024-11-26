@@ -181,6 +181,12 @@ given_an_annotated_subject_pod() {
 	echo "✅  The annotated subject pod is ready"
 }
 
+given_a_prebackup_pod_with_bad_exit_code() {
+	kubectl apply -f definitions/prebackup-pod-bad-exit-code/prebackup-pod.yaml
+
+	echo "✅  The PreBackupPod with a bad exit code is ready"
+}
+
 given_a_rwo_pvc_subject_in_worker_node() {
 	require_args 2 ${#}
 
