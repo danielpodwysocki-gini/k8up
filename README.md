@@ -43,7 +43,7 @@ To run the end-to-end test (e.g. `make e2e-test`), you additionally need:
 
 - `helm` (version 3)
 - `jq`
-- `yq`
+- `yq` (version >=4)
 - `node` and `npm`
 - `bash` (installed, doesn't have to be your default shell)
 - `base64`
