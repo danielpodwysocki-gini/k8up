@@ -305,7 +305,8 @@ func backupAnnotatedPods(ctx context.Context, resticCLI *resticCli.Restic, mainL
 
 func backupAnnotatedPod(pod kubernetes.BackupPod, mainLogger logr.Logger, hostname string, resticCLI *resticCli.Restic) error {
 	data, err := kubernetes.PodExec(pod, mainLogger)
-	if err != nil {
+	backupCommandFailed := <- data.Failed
+	if err != nil || backupCommandFailed {
 		return fmt.Errorf("error occurred during data stream from k8s: %w", err)
 	}
 	filename := fmt.Sprintf("/%s-%s", hostname, pod.ContainerName)

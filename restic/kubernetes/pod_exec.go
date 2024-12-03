@@ -19,6 +19,7 @@ import (
 type ExecData struct {
 	Reader *io.PipeReader
 	Done   chan bool
+	Failed chan bool
 }
 
 // PodExec sends the command to the specified pod
@@ -60,6 +61,7 @@ func PodExec(pod BackupPod, log logr.Logger) (*ExecData, error) {
 
 	var stdoutReader, stdoutWriter = io.Pipe()
 	done := make(chan bool, 1)
+	failed := make(chan bool, 1)
 	go func() {
 		err = exec.StreamWithContext(context.Background(), remotecommand.StreamOptions{
 			Stdin:  nil,
@@ -69,17 +71,22 @@ func PodExec(pod BackupPod, log logr.Logger) (*ExecData, error) {
 		})
 
 		defer stdoutWriter.Close()
+
 		done <- true
 
 		if err != nil {
 			execLogger.Error(err, "streaming data failed", "namespace", pod.Namespace, "pod", pod.PodName)
+			failed <- true
 			return
 		}
+		failed <- false
+
 	}()
 
 	data := &ExecData{
 		Done:   done,
 		Reader: stdoutReader,
+		Failed: failed,
 	}
 
 	return data, nil
