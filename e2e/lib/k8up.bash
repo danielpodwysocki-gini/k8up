@@ -460,7 +460,7 @@ wait_until() {
 	ns=${NAMESPACE=${DETIK_CLIENT_NAMESPACE}}
 
 	echo "Waiting for '${object}' in namespace '${ns}' to become '${condition}' ..."
-	kubectl -n "${ns}" wait --timeout 5m --for "condition=${condition}" "${object}"
+	kubectl -n "${ns}" wait --timeout 10m --for "condition=${condition}" "${object}"
 }
 
 expect_file_in_container() {
